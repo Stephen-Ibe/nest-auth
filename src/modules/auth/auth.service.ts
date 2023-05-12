@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register.dto';
-import { ErrorHandler, PasswordHelper } from 'src/utils';
+import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -34,5 +34,23 @@ export class AuthService {
     );
 
     return user;
+  }
+
+  async checkIfUserExists({
+    email,
+    phoneNumber,
+  }: {
+    email: string;
+    phoneNumber: string;
+  }) {
+    const data = { email: false, phoneNumber: false };
+
+    if (email) {
+      const validEmail = Utils.isEmail(email);
+      const user = await this.userRepo.count({ where: { email: validEmail } });
+      data.email = user > 0;
+    }
+
+    return data;
   }
 }
