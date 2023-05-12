@@ -5,6 +5,10 @@
 #env
 .env
 .env.development
+.env.prod
+.env.example
+.env.local
+.env.staging
 
 # Logs
 logs
