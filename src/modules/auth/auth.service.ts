@@ -38,7 +38,17 @@ export class AuthService {
       }),
     );
 
-    return user;
+    return this.signToken(user);
+  }
+
+  private signToken(userData: User): {
+    user: Record<string, unknown>;
+    accessToken: string;
+  } {
+    const user = { ...userData };
+    const token = this.jwtService.sign(user);
+
+    return { user: { ...user }, accessToken: token };
   }
 
   async checkIfUserExists({
