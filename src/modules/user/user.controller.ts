@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/guards';
-import { IUserRequest } from './types';
+import { IUser, IUserRequest } from './types';
 import { HttpResponse } from 'src/utils';
 import { UpdateUserProfileDto } from './dto';
 import { UserDecorator } from 'src/decorators';
@@ -43,9 +43,10 @@ export class UserController {
   @UseGuards(AuthGuard)
   async updateProfile(
     @Body() body: UpdateUserProfileDto,
-    @UserDecorator() user: IUserRequest,
+    @UserDecorator() user: IUser,
   ) {
-    const data = { ...body, user };
+    const data = await this.userService.updateProfile(user.id, body);
+
     return data;
   }
 }
