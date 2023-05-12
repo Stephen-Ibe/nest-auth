@@ -14,7 +14,7 @@ export class User extends BaseTable {
   email: string;
 
   @Column({ type: 'varchar', unique: true, nullable: true, length: 20 })
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @Exclude()
   @Column({ type: 'text', nullable: false })
