@@ -14,7 +14,7 @@ import {
 @Injectable()
 export class AuthService {
   constructor(
-    // private jwtService: JwtService,
+    private jwtService: JwtService,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
