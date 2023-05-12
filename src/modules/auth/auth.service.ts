@@ -110,6 +110,7 @@ export class AuthService {
       lastName: userData.lastName,
       isVerified: userData.isVerified,
       email: userData.email,
+      phoneNumber: userData.phoneNumber,
       createdAt: userData.createdAt,
     };
     const token = this.jwtService.sign(user);
