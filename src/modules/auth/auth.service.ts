@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
-import { LoginUserDto, RegisterUserDto } from './dto';
+import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -94,6 +94,10 @@ export class AuthService {
     }
 
     return this.signToken(user);
+  }
+
+  async resetPassword(payload: ResetPasswordDto) {
+    return payload;
   }
 
   private signToken(userData: User): {

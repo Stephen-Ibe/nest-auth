@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { HttpResponse } from 'src/utils/http-response.utils';
 import { LoginUserDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,5 +24,12 @@ export class AuthController {
       data,
       message: 'Login successfully',
     });
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    await this.authService.resetPassword(body);
+
+    return '';
   }
 }
