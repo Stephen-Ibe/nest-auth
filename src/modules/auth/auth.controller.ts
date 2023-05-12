@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { HttpResponse } from 'src/utils/http-response.utils';
 import { LoginUserDto } from './dto/login.dto';
-import { ResetPasswordDto } from './dto';
+import { CheckUserDto, ResetPasswordDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +29,18 @@ export class AuthController {
   @Post('reset-password')
   async resetPassword(@Body() body: ResetPasswordDto) {
     await this.authService.resetPassword(body);
-
     return '';
+  }
+
+  @Post('verify-user')
+  async checkUser(@Body() body: CheckUserDto) {
+    const { email } = await this.authService.checkIfUserExists({
+      email: body.email,
+    });
+    const data = {
+      email,
+    };
+
+    return HttpResponse.success({ data, message: 'User Identified validated' });
   }
 }

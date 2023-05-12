@@ -28,7 +28,6 @@ export class AuthService {
     let user: any;
     let target: string;
 
-    // add || phoneNumber to check if phoneNumber exists
     if (email) {
       // if (phoneNumber) {
       //   target = 'phone';
