@@ -3,14 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { RegisterUserDto } from './dto/register.dto';
-import {
-  ErrorHandler,
-  PasswordHelper,
-  PhoneNumberHandler,
-  Utils,
-} from 'src/utils';
-import { LoginUserDto } from './dto/login.dto';
+import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
+import { LoginUserDto, RegisterUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +14,10 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
   ) {}
 
+  /**
+   * Register a user - Signup
+   * @param  {RegisterUserDto} payload
+   */
   async register(payload: RegisterUserDto) {
     // check if user exists
     const { email } = await this.checkIfUserExists({
@@ -74,8 +72,28 @@ export class AuthService {
     return this.signToken(registeredUser);
   }
 
+  /**
+   * Login
+   * @param  {LoginUserDto} payload
+   */
   async login(payload: LoginUserDto) {
-    return payload;
+    const user = await this.userRepo.findOne({
+      where: { email: payload.email.toLowerCase() },
+    });
+
+    if (!user || user.deletedAt) {
+      ErrorHandler.BadRequestException('User not found');
+    }
+
+    const passwordIsCorrect = user
+      ? await PasswordHelper.comparePassword(payload.password, user.password)
+      : null;
+
+    if (!user || !passwordIsCorrect) {
+      ErrorHandler.BadRequestException('Email or Password is incorrect');
+    }
+
+    return this.signToken(user);
   }
 
   private signToken(userData: User): {
@@ -88,6 +106,7 @@ export class AuthService {
       lastName: userData.lastName,
       isVerified: userData.isVerified,
       email: userData.email,
+      createdAt: userData.createdAt,
     };
     const token = this.jwtService.sign(user);
 
