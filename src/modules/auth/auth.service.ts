@@ -4,7 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register.dto';
-import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
+import {
+  ErrorHandler,
+  PasswordHelper,
+  PhoneNumberHandler,
+  Utils,
+} from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -49,6 +54,15 @@ export class AuthService {
       const validEmail = Utils.isEmail(email);
       const user = await this.userRepo.count({ where: { email: validEmail } });
       data.email = user > 0;
+    }
+
+    if (phoneNumber) {
+      const formattedNumber =
+        PhoneNumberHandler.formatToCountryStandard(phoneNumber);
+      const user = await this.userRepo.count({
+        where: { phoneNumber: formattedNumber },
+      });
+      data.phoneNumber = user > 0;
     }
 
     return data;
