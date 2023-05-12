@@ -10,6 +10,7 @@ import {
   PhoneNumberHandler,
   Utils,
 } from 'src/utils';
+import { LoginUserDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -71,6 +72,10 @@ export class AuthService {
     );
 
     return this.signToken(registeredUser);
+  }
+
+  async login(payload: LoginUserDto) {
+    return payload;
   }
 
   private signToken(userData: User): {
