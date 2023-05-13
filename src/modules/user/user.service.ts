@@ -12,6 +12,11 @@ export class UserService {
     private userRepo: Repository<User>,
   ) {}
 
+  /**
+   * @param  {string} userId
+   * @param  {UpdateUserProfileDto} body
+   * @returns Promise
+   */
   async updateProfile(
     userId: string,
     body: UpdateUserProfileDto,
@@ -48,6 +53,10 @@ export class UserService {
     };
   }
 
+  /**
+   * @param  {string} userId
+   * @returns Promise
+   */
   async deleteProfile(userId: string): Promise<boolean> {
     await this.userRepo.softDelete(userId);
 
