@@ -9,7 +9,7 @@ import {
 export abstract class BaseTable {
   @Exclude()
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

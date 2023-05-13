@@ -22,4 +22,7 @@ export class User extends BaseTable {
 
   @Column({ type: 'boolean', default: false })
   isVerified: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  photoUrl: string;
 }
