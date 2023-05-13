@@ -23,7 +23,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get()
   async getUserProfile(@Request() { user }: IUserRequest) {
-    const userData = {
+    const data = {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -34,7 +34,7 @@ export class UserController {
     };
 
     return HttpResponse.success({
-      data: userData,
+      data,
       message: 'User fetched successfully',
     });
   }
@@ -47,6 +47,9 @@ export class UserController {
   ) {
     const data = await this.userService.updateProfile(user.id, body);
 
-    return data;
+    return HttpResponse.success({
+      data,
+      message: 'Profile updated successfully',
+    });
   }
 }
