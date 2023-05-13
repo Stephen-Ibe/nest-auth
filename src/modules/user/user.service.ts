@@ -12,7 +12,10 @@ export class UserService {
     private userRepo: Repository<User>,
   ) {}
 
-  async updateProfile(userId: string, body: UpdateUserProfileDto) {
+  async updateProfile(
+    userId: string,
+    body: UpdateUserProfileDto,
+  ): Promise<Record<string, any>> {
     const user = await this.userRepo.findOne({
       where: {
         id: userId,
@@ -43,5 +46,11 @@ export class UserService {
       email: payload.email || user.email,
       phoneNumber: payload.phoneNumber || user.phoneNumber,
     };
+  }
+
+  async deleteProfile(userId: string): Promise<boolean> {
+    await this.userRepo.softDelete(userId);
+
+    return true;
   }
 }

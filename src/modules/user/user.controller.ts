@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -22,7 +23,14 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Get()
-  async getUserProfile(@Request() { user }: IUserRequest) {
+  /**
+   * @param  {} @Request(
+   * @param  {IUserRequest} {user}
+   * @returns Promise
+   */
+  async getUserProfile(
+    @Request() { user }: IUserRequest,
+  ): Promise<Record<string, any>> {
     const data = {
       id: user.id,
       firstName: user.firstName,
@@ -39,17 +47,43 @@ export class UserController {
     });
   }
 
+  @HttpCode(HttpStatus.OK)
   @Put('update-profile')
   @UseGuards(AuthGuard)
+  /**
+   * @param  {} @Body(
+   * @param  {UpdateUserProfileDto} body
+   * @param  {} @UserDecorator(
+   * @param  {IUser} user
+   * @returns Promise
+   */
   async updateProfile(
     @Body() body: UpdateUserProfileDto,
     @UserDecorator() user: IUser,
-  ) {
+  ): Promise<Record<string, any>> {
     const data = await this.userService.updateProfile(user.id, body);
 
     return HttpResponse.success({
       data,
       message: 'Profile updated successfully',
+    });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Delete('delete-profile')
+  /**
+   * @param  {} @Request(
+   * @param  {IUserRequest} {user}
+   * @returns Promise
+   */
+  async deleteProfile(
+    @Request() { user }: IUserRequest,
+  ): Promise<Record<string, any>> {
+    await this.userService.deleteProfile(user.id);
+    return HttpResponse.success({
+      data: {},
+      message: 'Profile deleted successfully',
     });
   }
 }
