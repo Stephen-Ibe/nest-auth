@@ -9,13 +9,13 @@ import { CheckUserDto, ResetPasswordDto } from './dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.CREATED)
-  @Post('register')
   /**
    * @param  {} @Body(
    * @param  {RegisterUserDto} body
    * @returns Promise
    */
+  @HttpCode(HttpStatus.CREATED)
+  @Post('register')
   async register(@Body() body: RegisterUserDto): Promise<Record<string, any>> {
     const data = await this.authService.register(body);
 
