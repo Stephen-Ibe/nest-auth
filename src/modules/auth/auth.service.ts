@@ -5,11 +5,13 @@ import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
 import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
+import { CloudinaryService } from 'nestjs-cloudinary';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+    private readonly cloudinaryService: CloudinaryService,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
@@ -18,7 +20,9 @@ export class AuthService {
    * Register a user - Signup
    * @param  {RegisterUserDto} payload
    */
-  async register(payload: RegisterUserDto) {
+  async register(payload: RegisterUserDto, file: Express.Multer.File) {
+    const x = await this.cloudinaryService.uploadFile(file);
+
     // check if user exists
     const { email } = await this.checkIfUserExists({
       email: payload.email,
@@ -52,7 +56,7 @@ export class AuthService {
         );
       } else {
         ErrorHandler.BadRequestException(
-          `User with this ${target} already exists`,
+          `User with ${target} already exists. Please login to continue`,
         );
       }
     }
@@ -65,6 +69,7 @@ export class AuthService {
         lastName: payload.lastName,
         email: payload.email.toLowerCase(),
         password: hashPassword,
+        avatarUrl: x.url,
       }),
     );
 

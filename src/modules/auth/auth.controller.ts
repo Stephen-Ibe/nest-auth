@@ -1,9 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { HttpResponse } from 'src/utils/http-response.utils';
 import { LoginUserDto } from './dto/login.dto';
 import { CheckUserDto, ResetPasswordDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 export class AuthController {
@@ -16,8 +25,12 @@ export class AuthController {
    */
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  async register(@Body() body: RegisterUserDto): Promise<Record<string, any>> {
-    const data = await this.authService.register(body);
+  @UseInterceptors(FileInterceptor('photo'))
+  async register(
+    @Body() body: RegisterUserDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Record<string, any>> {
+    const data = await this.authService.register(body, file);
 
     return HttpResponse.success({ data, message: 'User created successfully' });
   }

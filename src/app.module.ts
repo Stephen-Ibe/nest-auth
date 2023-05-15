@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DatabaseModule } from 'src/db/db.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { CloudinaryModule } from 'nestjs-cloudinary';
 
 @Module({
   imports: [
@@ -18,7 +18,15 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
     DatabaseModule,
     UserModule,
     AuthModule,
-    CloudinaryModule,
+    CloudinaryModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        isGlobal: true,
+        cloud_name: configService.get('CLD_CLOUD_NAME'),
+        api_key: configService.get('CLD_API_KEY'),
+        api_secret: configService.get('CLD_API_SECRET'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
