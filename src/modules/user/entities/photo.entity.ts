@@ -1,6 +1,7 @@
 import { BaseTable } from 'src/base';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
+import { Client } from './client.entity';
 
 @Entity('photo')
 export class Photo extends BaseTable {
@@ -12,4 +13,7 @@ export class Photo extends BaseTable {
 
   @ManyToOne(() => User)
   user: User;
+
+  @ManyToOne(() => Client, (client) => client.photos)
+  client: Client;
 }

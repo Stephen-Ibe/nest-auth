@@ -17,6 +17,7 @@ export abstract class BaseTable {
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
+  @Exclude()
   @DeleteDateColumn()
   deletedAt?: Date;
 }

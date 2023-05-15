@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { BaseTable } from 'src/base';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
+import { Client } from './client.entity';
 
 @Entity('user')
 export class User extends BaseTable {
@@ -24,5 +25,8 @@ export class User extends BaseTable {
   isVerified: boolean;
 
   @Column({ type: 'text', nullable: true })
-  photoUrl: string;
+  avatarUrl: string;
+
+  @OneToOne(() => Client, (client) => client.user)
+  client: Client;
 }
