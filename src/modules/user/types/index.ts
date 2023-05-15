@@ -5,6 +5,7 @@ export type IUser = {
   isVerified: boolean;
   email: string;
   phoneNumber: string;
+  avatarUrl: string;
   createdAt: string;
   iat: number;
   exp: number;

@@ -38,6 +38,7 @@ export class UserController {
       isVerified: user.isVerified,
       email: user.email,
       phoneNumber: user.phoneNumber,
+      avatarUrl: user.avatarUrl,
       createdAt: user.createdAt,
     };
 

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
 import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
 import { CloudinaryService } from 'nestjs-cloudinary';
+import { DEFAULT_AVATAR } from 'src/base';
 
 @Injectable()
 export class AuthService {
@@ -21,8 +22,6 @@ export class AuthService {
    * @param  {RegisterUserDto} payload
    */
   async register(payload: RegisterUserDto, file: Express.Multer.File) {
-    const x = await this.cloudinaryService.uploadFile(file);
-
     // check if user exists
     const { email } = await this.checkIfUserExists({
       email: payload.email,
@@ -61,6 +60,7 @@ export class AuthService {
       }
     }
 
+    const avatar = await this.cloudinaryService.uploadFile(file);
     const hashPassword = await PasswordHelper.hashPassword(payload.password);
 
     const registeredUser = await this.userRepo.save(
@@ -69,7 +69,7 @@ export class AuthService {
         lastName: payload.lastName,
         email: payload.email.toLowerCase(),
         password: hashPassword,
-        avatarUrl: x.url,
+        avatarUrl: avatar.url,
       }),
     );
 
@@ -115,6 +115,7 @@ export class AuthService {
       isVerified: userData.isVerified,
       email: userData.email,
       phoneNumber: userData.phoneNumber,
+      avatarUrl: userData.avatarUrl,
       createdAt: userData.createdAt,
     };
     const token = this.jwtService.sign(user);
