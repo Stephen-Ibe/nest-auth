@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CloudinaryModule } from 'nestjs-cloudinary';
+import { TwilioModule } from 'nestjs-twilio';
 import { DatabaseModule } from 'src/db/db.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-import { CloudinaryModule } from 'nestjs-cloudinary';
-import { OtpModule } from './modules/otp/otp.module';
 
 @Module({
   imports: [
@@ -28,7 +28,6 @@ import { OtpModule } from './modules/otp/otp.module';
       }),
       inject: [ConfigService],
     }),
-    OtpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
