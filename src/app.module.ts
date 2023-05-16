@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CloudinaryModule } from 'nestjs-cloudinary';
+import { OtpModule } from './modules/otp/otp.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CloudinaryModule } from 'nestjs-cloudinary';
       }),
       inject: [ConfigService],
     }),
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
