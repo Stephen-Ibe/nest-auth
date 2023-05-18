@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { TwilioService } from 'nestjs-twilio';
-import { ErrorHandler, OtpHandler } from 'src/utils';
-import { Otp } from './entities/otp.entities';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TwilioService } from 'nestjs-twilio';
+import { OtpHandler } from 'src/utils';
+import { Repository } from 'typeorm';
+import { Otp } from './entities/otp.entities';
 import { IOtpType } from './otp.interface';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class OtpService {
         type,
       });
       const res = await this.sendSMS(
-        '+2349034587133',
+        user.phoneNumber,
         `Your verification code is ${otp}. Do not share this code with any person.`,
       );
 
