@@ -1,7 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { BaseTable } from 'src/base';
-import { Column, Entity, OneToOne } from 'typeorm';
-import { Client } from './client.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity('user')
 export class User extends BaseTable {
@@ -27,6 +26,6 @@ export class User extends BaseTable {
   @Column({ type: 'text', nullable: true })
   avatarUrl: string;
 
-  @OneToOne(() => Client, (client) => client.user)
-  client: Client;
+  // @OneToOne(() => Client, (client) => client.user)
+  // client: Client;
 }

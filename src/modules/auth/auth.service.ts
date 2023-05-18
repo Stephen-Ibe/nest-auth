@@ -71,6 +71,7 @@ export class AuthService {
         lastName: payload.lastName,
         email: payload.email.toLowerCase(),
         password: hashPassword,
+        phoneNumber: payload.phoneNumber,
         avatarUrl: avatar.url,
       }),
     );
