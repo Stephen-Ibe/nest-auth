@@ -12,7 +12,6 @@ export const datasourceOptions: DataSourceOptions = {
   database: DB_NAME,
   entities: [User, Otp],
   synchronize: true,
-  // dropSchema: true,
 };
 
 export default new DataSource(datasourceOptions);

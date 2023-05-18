@@ -1,7 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
-  IsOptional,
+  // IsOptional,
   IsString,
   Length,
   Matches,
@@ -23,8 +23,8 @@ export class RegisterUserDto {
   email: string;
 
   @IsString()
-  // @IsNotEmpty()
-  @IsOptional()
+  @IsNotEmpty()
+  // @IsOptional()
   phoneNumber: string;
 
   @IsString()

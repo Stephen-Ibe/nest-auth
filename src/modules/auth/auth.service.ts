@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from 'nestjs-cloudinary';
-import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
+import {
+  ErrorHandler,
+  PasswordHelper,
+  PhoneNumberHandler,
+  Utils,
+} from 'src/utils';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
@@ -25,24 +30,24 @@ export class AuthService {
    */
   async register(payload: RegisterUserDto, file: Express.Multer.File) {
     // check if user exists
-    const { email } = await this.checkIfUserExists({
+    const { email, phoneNumber } = await this.checkIfUserExists({
       email: payload.email,
-      // phoneNumber: payload.phoneNumber,
+      phoneNumber: payload.phoneNumber,
     });
 
     let user: any;
     let target: string;
 
-    if (email) {
-      // if (phoneNumber) {
-      //   target = 'phone';
-      //   const formattedNumber = PhoneNumberHandler.formatToCountryStandard(
-      //     payload.phoneNumber,
-      //   );
-      //   user = await this.userRepo.findOne({
-      //     where: { phoneNumber: formattedNumber },
-      //   });
-      // }
+    if (email || phoneNumber) {
+      if (phoneNumber) {
+        target = 'phone';
+        const formattedNumber = PhoneNumberHandler.formatToCountryStandard(
+          payload.phoneNumber,
+        );
+        user = await this.userRepo.findOne({
+          where: { phoneNumber: formattedNumber },
+        });
+      }
 
       if (email) {
         target = 'email';
@@ -130,7 +135,7 @@ export class AuthService {
     );
 
     if (!isValid) {
-      ErrorHandler.BadRequestException('Invalid Code');
+      ErrorHandler.BadRequestException('Invalid Code.');
     }
 
     await this.userRepo.update(payload.id, { isVerified: true });
@@ -168,10 +173,10 @@ export class AuthService {
 
   async checkIfUserExists({
     email,
-  }: // phoneNumber,
-  {
+    phoneNumber,
+  }: {
     email: string;
-    // phoneNumber?: string;
+    phoneNumber?: string;
   }) {
     const data = { email: false, phoneNumber: false };
 
@@ -181,14 +186,14 @@ export class AuthService {
       data.email = user > 0;
     }
 
-    // if (phoneNumber) {
-    //   const formattedNumber =
-    //     PhoneNumberHandler.formatToCountryStandard(phoneNumber);
-    //   const user = await this.userRepo.count({
-    //     where: { phoneNumber: formattedNumber },
-    //   });
-    //   data.phoneNumber = user > 0;
-    // }
+    if (phoneNumber) {
+      const formattedNumber =
+        PhoneNumberHandler.formatToCountryStandard(phoneNumber);
+      const user = await this.userRepo.count({
+        where: { phoneNumber: formattedNumber },
+      });
+      data.phoneNumber = user > 0;
+    }
 
     return data;
   }
