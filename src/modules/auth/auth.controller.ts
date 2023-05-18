@@ -75,6 +75,12 @@ export class AuthController {
 
   @Post('verify')
   @UseGuards(AuthGuard)
+  /**
+   * @param  {} @Body(
+   * @param  {ValidateRegistrationOtp} body
+   * @param  {} @UserDecorator(
+   * @param  {IUser} user
+   */
   async verifyRegistrationOtp(
     @Body() body: ValidateRegistrationOtp,
     @UserDecorator() user: IUser,

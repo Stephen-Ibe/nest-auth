@@ -113,7 +113,15 @@ export class AuthService {
     return this.signToken(user);
   }
 
-  async validateOtp(payload, type: IOtpType) {
+  /**
+   * Validate OTP
+   * @param  {} payload
+   * @param  {IOtpType} type
+   */
+  async validateOtp(
+    payload: Record<string, any>,
+    type: IOtpType,
+  ): Promise<Record<string, any>> {
     const isValid = await this.otpService.verifyOtp(
       payload.code,
       payload.id,
