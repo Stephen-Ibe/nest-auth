@@ -5,10 +5,11 @@ import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { OtpModule } from '../otp/otp.module';
+import { Otp } from '../otp/entities/otp.entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Otp]),
     JwtModule.register({
       secret: 'JWT_SECRET',
       signOptions: { expiresIn: '1h' },

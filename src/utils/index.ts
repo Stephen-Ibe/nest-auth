@@ -4,3 +4,4 @@ export * from './base.utils';
 export * from './http-response.utils';
 export * from './phoneNumber.utils';
 export * from './test.utils';
+export * from './otp.utils';

@@ -17,11 +17,12 @@ import { UpdateUserProfileDto } from './dto';
 import { UserDecorator } from 'src/decorators';
 
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   /**
    * @param  {} @Request(
@@ -50,7 +51,7 @@ export class UserController {
 
   @HttpCode(HttpStatus.OK)
   @Put('update-profile')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   /**
    * @param  {} @Body(
    * @param  {UpdateUserProfileDto} body
@@ -71,7 +72,7 @@ export class UserController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Delete('delete-profile')
   /**
    * @param  {} @Request(

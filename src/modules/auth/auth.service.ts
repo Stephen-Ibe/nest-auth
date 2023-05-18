@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
-import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
 import { CloudinaryService } from 'nestjs-cloudinary';
-import { DEFAULT_AVATAR } from 'src/base';
+import { ErrorHandler, OtpHandler, PasswordHelper, Utils } from 'src/utils';
+import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
+import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
+import { Otp } from '../otp/entities/otp.entities';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +15,8 @@ export class AuthService {
     private readonly cloudinaryService: CloudinaryService,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(Otp)
+    private readonly otpRepo: Repository<Otp>,
   ) {}
 
   /**
@@ -72,6 +74,10 @@ export class AuthService {
         avatarUrl: avatar.url,
       }),
     );
+
+    const otp = OtpHandler.generateOtp(6);
+
+    // await this.otpRepo.save({})
 
     return this.signToken(registeredUser);
   }
