@@ -4,10 +4,11 @@ import { Otp } from './entities/otp.entities';
 import { OtpService } from './otp.service';
 import { TwilioModule } from 'nestjs-twilio';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from '../user/entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Otp]),
+    TypeOrmModule.forFeature([Otp, User]),
     TwilioModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

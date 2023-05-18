@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from 'nestjs-cloudinary';
-import { ErrorHandler, OtpHandler, PasswordHelper, Utils } from 'src/utils';
+import { ErrorHandler, PasswordHelper, Utils } from 'src/utils';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
-import { Otp } from '../otp/entities/otp.entities';
+import { OtpService } from '../otp/otp.service';
+import { IOtpType } from '../otp/otp.interface';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,7 @@ export class AuthService {
     private readonly cloudinaryService: CloudinaryService,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectRepository(Otp)
-    private readonly otpRepo: Repository<Otp>,
+    private readonly otpService: OtpService,
   ) {}
 
   /**
@@ -75,11 +75,18 @@ export class AuthService {
       }),
     );
 
-    const otp = OtpHandler.generateOtp(6);
+    const res = await this.otpService.saveAndSendOtp(
+      registeredUser,
+      IOtpType.REGISTER,
+    );
 
-    // await this.otpRepo.save({})
-
-    return this.signToken(registeredUser);
+    if (res.errorCode === null) {
+      return this.signToken(registeredUser);
+    } else {
+      return ErrorHandler.BadRequestException(
+        'User Ceated awaiting verification. Invalid Number! Please check destination number.',
+      );
+    }
   }
 
   /**
