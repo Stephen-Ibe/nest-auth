@@ -84,7 +84,7 @@ export class AuthService {
       return this.signToken(registeredUser);
     } else {
       return ErrorHandler.BadRequestException(
-        'User Ceated awaiting verification. Invalid Number! Please check destination number.',
+        'Invalid Number! Please check destination number to complete verification.',
       );
     }
   }
@@ -111,6 +111,27 @@ export class AuthService {
     }
 
     return this.signToken(user);
+  }
+
+  async validateOtp(payload, type: IOtpType) {
+    const isValid = await this.otpService.verifyOtp(
+      payload.code,
+      payload.id,
+      type,
+    );
+
+    if (!isValid) {
+      ErrorHandler.BadRequestException('Invalid Code');
+    }
+
+    await this.userRepo.update(payload.id, { isVerified: true });
+
+    return {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      phoneNumber: payload.phoneNumber,
+    };
   }
 
   async resetPassword(payload: ResetPasswordDto) {

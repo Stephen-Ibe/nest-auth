@@ -6,6 +6,7 @@ import {
   ParseFilePipeBuilder,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -14,6 +15,11 @@ import { HttpResponse } from 'src/utils/http-response.utils';
 import { LoginUserDto } from './dto/login.dto';
 import { CheckUserDto, ResetPasswordDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/guards';
+import { ValidateRegistrationOtp } from './dto/validateOtp.dto';
+import { IOtpType } from '../otp/otp.interface';
+import { UserDecorator } from 'src/decorators';
+import { IUser } from '../user/types';
 
 @Controller('auth')
 export class AuthController {
@@ -67,6 +73,23 @@ export class AuthController {
     return '';
   }
 
+  @Post('verify')
+  @UseGuards(AuthGuard)
+  async verifyRegistrationOtp(
+    @Body() body: ValidateRegistrationOtp,
+    @UserDecorator() user: IUser,
+  ) {
+    const payload = { ...body, ...user };
+    const data = await this.authService.validateOtp(payload, IOtpType.REGISTER);
+
+    console.log(data);
+
+    return HttpResponse.success({
+      data,
+      message: 'User Verified Successfully',
+    });
+  }
+
   @HttpCode(HttpStatus.OK)
   @Post('verify-user')
   /**
@@ -78,6 +101,7 @@ export class AuthController {
     const { email } = await this.authService.checkIfUserExists({
       email: body.email,
     });
+
     const data = {
       email,
     };

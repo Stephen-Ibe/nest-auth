@@ -19,7 +19,7 @@ export class Otp {
   code: string;
 
   @Column({ type: 'boolean', nullable: false, default: false })
-  isValid: boolean;
+  isUsed: boolean;
 
   @Column({ type: 'varchar', nullable: false })
   type: IOtpType;
