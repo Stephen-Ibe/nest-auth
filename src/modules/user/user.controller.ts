@@ -51,7 +51,6 @@ export class UserController {
 
   @HttpCode(HttpStatus.OK)
   @Put('update-profile')
-  // @UseGuards(AuthGuard)
   /**
    * @param  {} @Body(
    * @param  {UpdateUserProfileDto} body

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TwilioService } from 'nestjs-twilio';
-import { OtpHandler } from 'src/utils';
+import { ErrorHandler, OtpHandler } from 'src/utils';
 import { Repository } from 'typeorm';
 import { Otp } from './entities/otp.entities';
 import { IOtpType } from './otp.interface';
@@ -46,7 +46,9 @@ export class OtpService {
       where: { code: otp, userId, type },
     });
 
-    if (!otpIsValid || otpIsValid.isUsed) return false;
+    if (!otpIsValid || otpIsValid.isUsed) {
+      ErrorHandler.BadRequestException('Invalid Code.');
+    }
 
     const payload = {
       isUsed: true,

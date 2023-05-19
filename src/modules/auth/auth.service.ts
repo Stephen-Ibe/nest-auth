@@ -81,7 +81,9 @@ export class AuthService {
         lastName: payload.lastName,
         email: payload.email.toLowerCase(),
         password: hashPassword,
-        phoneNumber: payload.phoneNumber,
+        phoneNumber: PhoneNumberHandler.formatToCountryStandard(
+          payload.phoneNumber,
+        ),
         avatarUrl: avatar.url,
       }),
     );
@@ -125,7 +127,7 @@ export class AuthService {
   }
 
   /**
-   * Validate OTP adn Verify User
+   * Validate OTP and Verify User
    * @param  {} payload
    * @param  {IOtpType} type
    */
@@ -139,11 +141,7 @@ export class AuthService {
       type,
     );
 
-    if (!isValid) {
-      ErrorHandler.BadRequestException('Invalid Code.');
-    }
-
-    await this.userRepo.update(payload.id, { isVerified: true });
+    await this.userRepo.update(payload.id, { isVerified: isValid });
 
     return {
       firstName: payload.firstName,
@@ -155,10 +153,27 @@ export class AuthService {
 
   async forgotPassword(payload: ForgotPasswordDto) {
     const { phoneNumber } = await this.checkIfUserExists({
-      email: payload.phoneNumber,
+      phoneNumber: payload.phoneNumber,
     });
 
-    return { phoneNumber };
+    let user: any;
+
+    if (!phoneNumber) {
+      ErrorHandler.NotFoundException(
+        `If email exists you'll get a unique code to complete the reset process`,
+      );
+    }
+
+    if (phoneNumber) {
+      const formattedNumber = PhoneNumberHandler.formatToCountryStandard(
+        payload.phoneNumber,
+      );
+      user = await this.userRepo.findOne({
+        where: { phoneNumber: formattedNumber },
+      });
+    }
+
+    return user;
   }
 
   async resetPassword(payload: ResetPasswordDto) {

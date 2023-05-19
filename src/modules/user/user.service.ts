@@ -37,6 +37,16 @@ export class UserService {
       }
     }
 
+    if (body.phoneNumber) {
+      const phoneNumberExist = await this.userRepo.findOne({
+        where: { phoneNumber: body.phoneNumber },
+      });
+
+      if (phoneNumberExist && phoneNumberExist.id !== userId) {
+        ErrorHandler.ConflictException('Phone number is taken.');
+      }
+    }
+
     const payload = {
       firstName: body.firstName,
       lastName: body.lastName,

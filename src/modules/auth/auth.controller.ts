@@ -20,6 +20,7 @@ import { ValidateRegistrationOtp } from './dto/validateOtp.dto';
 import { IOtpType } from '../otp/otp.interface';
 import { UserDecorator } from 'src/decorators';
 import { IUser } from '../user/types';
+import { ErrorHandler } from 'src/utils';
 
 @Controller('auth')
 export class AuthController {
@@ -80,10 +81,10 @@ export class AuthController {
     return '';
   }
 
-  @Post('verify-user')
+  @Post('verify')
   @UseGuards(AuthGuard)
   /**
-   * validateOtp and Verify User
+   * Validate Otp and Verify User
    * @param  {} @Body(
    * @param  {ValidateRegistrationOtp} body
    * @param  {} @UserDecorator(
@@ -117,10 +118,14 @@ export class AuthController {
       email: body.email,
     });
 
+    if (!email) {
+      ErrorHandler.NotFoundException('User not found');
+    }
+
     const data = {
-      email,
+      email: body.email,
     };
 
-    return HttpResponse.success({ data, message: 'User Identified validated' });
+    return HttpResponse.success({ data, message: 'User exists' });
   }
 }
