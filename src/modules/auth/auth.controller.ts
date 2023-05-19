@@ -70,9 +70,11 @@ export class AuthController {
 
   @Post('forgot-password')
   async forgotPassword(@Body() body: ForgotPasswordDto) {
-    const data = await this.authService.forgotPassword(body);
+    await this.authService.forgotPassword(body);
 
-    return data;
+    return HttpResponse.success({
+      message: `If your have an account with us, you'll receive a unique code to complete the reset process`,
+    });
   }
 
   @Post('reset-password')

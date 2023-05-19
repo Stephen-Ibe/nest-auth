@@ -31,7 +31,7 @@ export class OtpService {
         type,
       });
       const res = await this.sendSMS(
-        user.phoneNumber,
+        `+${user.phoneNumber}`,
         `Your verification code is ${otp}. Do not share this code with any person.`,
       );
 

@@ -96,7 +96,7 @@ export class AuthService {
     if (res.errorCode === null) {
       return this.signToken(registeredUser);
     } else {
-      return ErrorHandler.BadRequestException(
+      ErrorHandler.BadRequestException(
         'Invalid Number! Please check destination number to complete verification.',
       );
     }
@@ -173,7 +173,18 @@ export class AuthService {
       });
     }
 
-    return user;
+    const res = await this.otpService.saveAndSendOtp(
+      user,
+      IOtpType.RESETPASSWORD,
+    );
+
+    if (res.status === 400) {
+      ErrorHandler.BadRequestException(
+        'Invalid Number! Please check destination number to complete verification.',
+      );
+    }
+
+    return true;
   }
 
   async resetPassword(payload: ResetPasswordDto) {

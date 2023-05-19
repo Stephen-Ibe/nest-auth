@@ -1,5 +1,5 @@
 export class HttpResponse {
-  static success(payload: { data: any; message: string }) {
+  static success(payload: { data?: any; message: string }) {
     return {
       success: true,
       data: payload.data,
