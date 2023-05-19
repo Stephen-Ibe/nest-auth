@@ -10,7 +10,12 @@ import {
 } from 'src/utils';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
-import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from './dto';
+import {
+  ForgotPasswordDto,
+  LoginUserDto,
+  RegisterUserDto,
+  ResetPasswordDto,
+} from './dto';
 import { OtpService } from '../otp/otp.service';
 import { IOtpType } from '../otp/otp.interface';
 
@@ -120,11 +125,11 @@ export class AuthService {
   }
 
   /**
-   * Validate OTP
+   * Validate OTP adn Verify User
    * @param  {} payload
    * @param  {IOtpType} type
    */
-  async validateOtp(
+  async validateOtpAndVerifyUser(
     payload: Record<string, any>,
     type: IOtpType,
   ): Promise<Record<string, any>> {
@@ -146,6 +151,14 @@ export class AuthService {
       email: payload.email,
       phoneNumber: payload.phoneNumber,
     };
+  }
+
+  async forgotPassword(payload: ForgotPasswordDto) {
+    const { phoneNumber } = await this.checkIfUserExists({
+      email: payload.phoneNumber,
+    });
+
+    return { phoneNumber };
   }
 
   async resetPassword(payload: ResetPasswordDto) {
@@ -175,7 +188,7 @@ export class AuthService {
     email,
     phoneNumber,
   }: {
-    email: string;
+    email?: string;
     phoneNumber?: string;
   }) {
     const data = { email: false, phoneNumber: false };

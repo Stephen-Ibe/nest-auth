@@ -26,6 +26,7 @@ export class UserService {
         id: userId,
       },
     });
+
     if (body.email) {
       const emailExist = await this.userRepo.findOne({
         where: { email: body.email },

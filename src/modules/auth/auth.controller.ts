@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.dto';
 import { HttpResponse } from 'src/utils/http-response.utils';
 import { LoginUserDto } from './dto/login.dto';
-import { CheckUserDto, ResetPasswordDto } from './dto';
+import { CheckUserDto, ForgotPasswordDto, ResetPasswordDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/guards';
 import { ValidateRegistrationOtp } from './dto/validateOtp.dto';
@@ -67,15 +67,23 @@ export class AuthController {
     });
   }
 
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
+    const data = await this.authService.forgotPassword(body);
+
+    return data;
+  }
+
   @Post('reset-password')
   async resetPassword(@Body() body: ResetPasswordDto) {
     await this.authService.resetPassword(body);
     return '';
   }
 
-  @Post('verify')
+  @Post('verify-user')
   @UseGuards(AuthGuard)
   /**
+   * validateOtp and Verify User
    * @param  {} @Body(
    * @param  {ValidateRegistrationOtp} body
    * @param  {} @UserDecorator(
@@ -86,9 +94,10 @@ export class AuthController {
     @UserDecorator() user: IUser,
   ) {
     const payload = { ...body, ...user };
-    const data = await this.authService.validateOtp(payload, IOtpType.REGISTER);
-
-    console.log(data);
+    const data = await this.authService.validateOtpAndVerifyUser(
+      payload,
+      IOtpType.REGISTER,
+    );
 
     return HttpResponse.success({
       data,
@@ -97,7 +106,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('verify-user')
+  @Post('check-user')
   /**
    * @param  {} @Body(
    * @param  {CheckUserDto} body
