@@ -93,13 +93,22 @@ export class AuthService {
       IOtpType.REGISTER,
     );
 
-    if (res.errorCode === null) {
-      return this.signToken(registeredUser);
-    } else {
+    if(null !== res.errorCode){
       ErrorHandler.BadRequestException(
         'Invalid Number! Please check destination number to complete verification.',
       );
+      return;
     }
+
+    return this.signToken(registeredUser);
+
+    // if (res.errorCode === null) {
+    //   return this.signToken(registeredUser);
+    // } else {
+    //   ErrorHandler.BadRequestException(
+    //     'Invalid Number! Please check destination number to complete verification.',
+    //   );
+    // }
   }
 
   /**
